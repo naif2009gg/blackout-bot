@@ -14,7 +14,7 @@ app.use((req, res, next) => {
 });
 
 // Config
-const BOT_TOKEN = process.env.BOT_TOKEN;
+const BOT_TOKEN      = process.env.BOT_TOKEN;
 const GUILD_ID       = '1426599027364855959';
 const CATEGORY_ID    = '1476094397501149194';
 const STAFF_ROLE_ID  = '1436035759000916068';
@@ -53,7 +53,7 @@ app.post('/create-ticket', async (req, res) => {
       parent: CATEGORY_ID,
       permissionOverwrites: [
         {
-          id: guild.roles.everyone,
+          id: guild.roles.everyone.id,
           deny: [PermissionsBitField.Flags.ViewChannel],
         },
         {
@@ -64,16 +64,19 @@ app.post('/create-ticket', async (req, res) => {
             PermissionsBitField.Flags.ReadMessageHistory,
           ],
         },
-        {
-          id: userId,
-          allow: [
-            PermissionsBitField.Flags.ViewChannel,
-            PermissionsBitField.Flags.SendMessages,
-            PermissionsBitField.Flags.ReadMessageHistory,
-          ],
-        },
       ],
     });
+
+    // إضافة صلاحية المستخدم بعد إنشاء القناة
+    try {
+      await channel.permissionOverwrites.create(userId, {
+        ViewChannel: true,
+        SendMessages: true,
+        ReadMessageHistory: true,
+      });
+    } catch(permErr) {
+      console.log('تعذر إضافة صلاحية المستخدم:', permErr.message);
+    }
 
     // إرسال رسالة الطلب داخل القناة
     const itemsList = items.map(i => `• ${i.name} x${i.qty} — $${(i.price * i.qty).toFixed(2)}`).join('\n');
