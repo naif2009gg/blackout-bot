@@ -14,7 +14,7 @@ app.use((req, res, next) => {
 });
 
 // Config
-const BOT_TOKEN      = 'MTQxNzU4NjI1NjI4Nzc2MDM4NQ.Gtm5iR.-yYIZydmNkC06DYHG2YFgdmDWWP5jAJLtx8Ua0';
+const BOT_TOKEN      = process.env.BOT_TOKEN;
 const GUILD_ID       = '1426599027364855959';
 const CATEGORY_ID    = '1476094397501149194';
 const STAFF_ROLE_ID  = '1436035759000916068';
